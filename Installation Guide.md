@@ -3,9 +3,13 @@ This is our solution to Electric Vehicle Routing Problem
 
 Required Libraries  
 numpy
+
 collections
+
 pandas
+
 itertools
+
 argparse
 
 How to run the code on terminal
