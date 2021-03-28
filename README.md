@@ -1,6 +1,6 @@
 # AIFA-Assignemnt-1
 
-**Team Members => 
+**Team Members =>        
 Rahul Choudhary (19AE10024)    
 Rishabh Roy (19ME10097)     
 Neil Prasanna Butala (19ME10100)    
