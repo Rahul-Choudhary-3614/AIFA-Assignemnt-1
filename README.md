@@ -1,10 +1,10 @@
 # AIFA-Assignemnt-1
 
 **Team Members => 
-Rahul Choudhary (19AE10024)
-Rishabh Roy (19ME10097)
-Neil Prasanna Butala (19ME10100)
-Salmaan Ahmed Ansari (18BT10017)**
+Rahul Choudhary (19AE10024)    
+Rishabh Roy (19ME10097)     
+Neil Prasanna Butala (19ME10100)    
+Salmaan Ahmed Ansari (18BT10017)**    
 This is our solution to Electric Vehicle Routing Problem                                                                                                            
 **Problem Statement-**
 Consider a city network where we need to route a set of electric vehicles which may require to be charged during its journey from some source to some destination. 
