@@ -6,7 +6,7 @@ import argparse
 
 parser = argparse.ArgumentParser() #Arg parser to get input
 parser.add_argument('--n', dest='nodes',nargs=3,required=True,action='append',help="details of graph node-1 node-2 distance between them")
-parser.add_argument('--Pruning',required=True,type=int,help='Run Algo With pruning or without pruning')
+parser.add_argument('--Pruning',default=1,type=int,help='Run Algo With pruning or without pruning')
 parser.add_argument('--num_cars',type=int,required=True,help='No of Cars')
 parser.add_argument('--c', dest='cars',nargs=7,required=True,action='append',help="details of cars in following order source of car , destination of car , init_battery of car , Max_battery of car , charging_rate of car , discharging_rate of car , Average speed of car ")
 args = parser.parse_args()
