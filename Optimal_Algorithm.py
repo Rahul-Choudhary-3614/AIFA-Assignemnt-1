@@ -5,9 +5,10 @@ import itertools
 import argparse
 
 parser = argparse.ArgumentParser() #Arg parser to get input
-parser.add_argument('--n', dest='nodes',nargs=3,action='append',help="details of graph node-1 node-2 distance between them")
+parser.add_argument('--n', dest='nodes',nargs=3,required=True,action='append',help="details of graph node-1 node-2 distance between them")
+parser.add_argument('--Pruning',required=True,type=int,help='Run Algo With pruning or without pruning')
 parser.add_argument('--num_cars',type=int,required=True,help='No of Cars')
-parser.add_argument('--c', dest='cars',nargs=7,action='append',help="details of cars in following order source of car , destination of car , init_battery of car , Max_battery of car , charging_rate of car , discharging_rate of car , Average speed of car ")
+parser.add_argument('--c', dest='cars',nargs=7,required=True,action='append',help="details of cars in following order source of car , destination of car , init_battery of car , Max_battery of car , charging_rate of car , discharging_rate of car , Average speed of car ")
 args = parser.parse_args()
 
 class Graph: #Graph to get all possible paths from source to destination for a particular car
@@ -152,93 +153,94 @@ def all_paths_combinations(cars,graph):  #Function to get all possible combinati
   return all_paths_combinations
 
 """##DFS""" # Depth First Search To find path with minimum of max(tr)
+if not args.Pruning:
+    cars = get_cars(args)
+    all_paths = all_paths_combinations(cars,graph)
+    best_path = []
+    best_path_time = [np.inf]*len(cars)
+    while all_paths!=[]:
+        paths_choosen_index  = (np.random.choice(len(all_paths),1)).reshape(())
+        paths_choosen =  list(all_paths[paths_choosen_index])
+        path_time = []
+        cars = get_cars(args)
+        while cars!=[]:
+            for i,car in enumerate(cars):
+                current_node  = car.current_location
+                if int(car.current_location)==int(car.destination):
+                    continue
+                childs,childs_dis = Nodes_dict[current_node]
+                current_node_index = paths_choosen[i].index(int(current_node))
+                next_node = paths_choosen[i][current_node_index+1]
+                choosen_child_index = childs.index(int(next_node))
+                choosen_child,choosen_child_dis = childs[choosen_child_index],childs_dis[choosen_child_index]
+                if car.enough_battery(choosen_child_dis):
+                    car.update(choosen_child,choosen_child_dis)
+                else:
+                    if not check_car(cars,car):
+                        car.charging()
+                    else:
+                        car.wait(cars,car)
+            for j,car in enumerate(cars):
+                if car.current_location==car.destination:
+                    path_time.append(car.tr)
+                    cars.remove(car)
+                    paths_choosen.pop(j)
+        if path_time!=[]:
+            if max(path_time) < max(best_path_time):
+                best_path = list(all_paths[paths_choosen_index])
+                best_path_time = path_time
 
-cars = get_cars(args)
-all_paths = all_paths_combinations(cars,graph)
-best_path = []
-best_path_time = [np.inf]*len(cars)
-while all_paths!=[]:
-  paths_choosen_index  = (np.random.choice(len(all_paths),1)).reshape(())
-  paths_choosen =  list(all_paths[paths_choosen_index])
-  path_time = []
-  cars = get_cars(args)
-  while cars!=[]:
-    for i,car in enumerate(cars):
-      current_node  = car.current_location
-      if int(car.current_location)==int(car.destination):
-        continue
-      childs,childs_dis = Nodes_dict[current_node]
-      current_node_index = paths_choosen[i].index(int(current_node))
-      next_node = paths_choosen[i][current_node_index+1]
-      choosen_child_index = childs.index(int(next_node))
-      choosen_child,choosen_child_dis = childs[choosen_child_index],childs_dis[choosen_child_index]
-      if car.enough_battery(choosen_child_dis):
-        car.update(choosen_child,choosen_child_dis)
-      else:
-        if not check_car(cars,car):
-          car.charging()
-        else:
-          car.wait(cars,car)
-    for j,car in enumerate(cars):
-      if car.current_location==car.destination:
-        path_time.append(car.tr)
-        cars.remove(car)
-        paths_choosen.pop(j)
-  if max(path_time) < max(best_path_time) and path_time!=[]:
-    best_path = list(all_paths[paths_choosen_index])
-    best_path_time = path_time
-
-  all_paths.pop(paths_choosen_index)
-print('By DFS Method:')
-print('Best path: ', best_path)
-print('Best path Time: ', best_path_time)
-print('Max Tr: ', max(best_path_time))
+        all_paths.pop(paths_choosen_index)
+    print('By DFS Method:')
+    print('Best path: ', best_path)
+    print('Best path Time: ', best_path_time)
+    print('Max Tr: ', max(best_path_time))
 
 """##Pruning""" # Depth First Search combined with pruning to find path with minimum of max(tr)
-cars = get_cars(args) 
-all_paths = all_paths_combinations(cars,graph)
-
-best_path = []
-best_path_time = [np.inf]*len(cars)
-while all_paths!=[]:
-  paths_choosen_index  = (np.random.choice(len(all_paths),1)).reshape(())
-  paths_choosen =  list(all_paths[paths_choosen_index])
-  path_time = []
-  cars = get_cars(args)
-  while cars!=[]:
-    for i,car in enumerate(cars):
-      current_node  = car.current_location
-      if int(car.current_location)==int(car.destination):
-        continue
-      if car.tr > max(best_path_time):
+if args.Pruning:
+    cars = get_cars(args)
+    all_paths = all_paths_combinations(cars,graph)
+    best_path = []
+    best_path_time = [np.inf]*len(cars)
+    while all_paths!=[]:
+        paths_choosen_index  = (np.random.choice(len(all_paths),1)).reshape(())
+        paths_choosen =  list(all_paths[paths_choosen_index])
         path_time = []
-        break
-      childs,childs_dis = Nodes_dict[current_node]
-      current_node_index = paths_choosen[i].index(int(current_node))
-      next_node = paths_choosen[i][current_node_index+1]
-      choosen_child_index = childs.index(int(next_node))
-      choosen_child,choosen_child_dis = childs[choosen_child_index],childs_dis[choosen_child_index]
-      if car.enough_battery(choosen_child_dis):
-        car.update(choosen_child,choosen_child_dis)
-      else:
-        if not check_car(cars,car):
-          car.charging()
-        else:
-          car.wait(cars,car)
-    if car.tr > max(best_path_time):
-      break  
-    for j,car in enumerate(cars):
-      if car.current_location==car.destination:
-        path_time.append(car.tr)
-        cars.remove(car)
-        paths_choosen.pop(j)
-  if len(path_time)==args.num_cars:
-    if max(path_time) < max(best_path_time):
-      best_path = list(all_paths[paths_choosen_index])
-      best_path_time = path_time
+        cars = get_cars(args)
+        while cars!=[]:
+            for i,car in enumerate(cars):
+                current_node  = car.current_location
+                if int(car.current_location)==int(car.destination):
+                    continue
+                if car.tr > max(best_path_time):
+                    path_time = []
+                    break
+                childs,childs_dis = Nodes_dict[current_node]
+                current_node_index = paths_choosen[i].index(int(current_node))
+                next_node = paths_choosen[i][current_node_index+1]
+                choosen_child_index = childs.index(int(next_node))
+                choosen_child,choosen_child_dis = childs[choosen_child_index],childs_dis[choosen_child_index]
+                if car.enough_battery(choosen_child_dis):
+                    car.update(choosen_child,choosen_child_dis)
+                else:
+                    if not check_car(cars,car):
+                        car.charging()
+                    else:
+                        car.wait(cars,car)
+            if car.tr > max(best_path_time):
+                break 
+            for j,car in enumerate(cars):
+                if car.current_location==car.destination:
+                    path_time.append(car.tr)
+                    cars.remove(car)
+                    paths_choosen.pop(j)
+        if path_time!=[]:
+            if max(path_time) < max(best_path_time):
+                best_path = list(all_paths[paths_choosen_index])
+                best_path_time = path_time
 
-  all_paths.pop(paths_choosen_index)
-print('By Pruning Method:')
-print('Best path: ', best_path)
-print('Best path Time: ', best_path_time)
-print('Max Tr: ', max(best_path_time))
+        all_paths.pop(paths_choosen_index)
+    print('By Pruning Method:')
+    print('Best path: ', best_path)
+    print('Best path Time: ', best_path_time)
+    print('Max Tr: ', max(best_path_time))
