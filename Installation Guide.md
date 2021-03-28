@@ -13,7 +13,10 @@ How to run the code on terminal
 
 python3 Optimal_Algorithm.py  --n < node 1 > < node 2> < distance between the nodes 1 and 2> --n < node 3 > < node 4 > < distance between the nodes 3 and 4 > --num_cars < no of cars > --c < source of car > < destination of car > < init_battery of car > < Max_battery of car > < charging_rate of car > < discharging_rate of car > < Average speed of car > 
  --c < source of another car > < destination of another car > < init_battery of another car > < Max_battery of another car > < charging_rate of another car > < discharging_rate of another car > < Average speed of another car> 
+ 
                                   OR 
+                                  
+                                  
 python3 Heuristic_Algorithm.py  --n < node 1 > < node 2> < distance between the nodes 1 and 2> --n < node 3 > < node 4 > < distance between the nodes 3 and 4 > --num_cars < no of cars > --c < source of car > < destination of car > < init_battery of car > < Max_battery of car > < charging_rate of car > < discharging_rate of car > < Average speed of car > 
  --c < source of another car > < destination of another car > < init_battery of another car > < Max_battery of another car > < charging_rate of another car > < discharging_rate of another car > < Average speed of another car> 
   
