@@ -2,15 +2,11 @@
 This is our solution to Electric Vehicle Routing Problem
 
 Required Libraries  
-numpy
-
-collections
-
-pandas
-
-itertools
-
-argparse
+1) numpy
+2) collections
+3) pandas
+4) itertools
+5) argparse
 
 How to run the code on terminal
 
